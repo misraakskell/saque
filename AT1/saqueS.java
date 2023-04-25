@@ -5,15 +5,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.math.RoundingMode;
-import java.util.stream.Collectors;
 
 public class saqueS implements funcoes {
 
 	float d;
 	Scanner sc = new Scanner(System.in);
-	BigDecimal zero = new BigDecimal(0);
+	BigDecimal todoValorDisponivel = new BigDecimal(0);
 	List<BigDecimal> notas = new ArrayList<BigDecimal>();
 	List<Integer> qntd = new ArrayList<Integer>();
+	List<Integer> cedulas = new ArrayList<Integer>();
 
 	public void lista() {
 		notas.add(new BigDecimal(200));
@@ -32,26 +32,47 @@ public class saqueS implements funcoes {
 
 		//ainda possui problema no calculo das moedas de 1 centavo
 
+		cedulas.add(2);
+		cedulas.add(2);
+		cedulas.add(5);
+		cedulas.add(4);
+		cedulas.add(6);
+		cedulas.add(8);
+		cedulas.add(2);
+		cedulas.add(5);
+		cedulas.add(6);
+		cedulas.add(8);
+		cedulas.add(10);
+		cedulas.add(10);
+		cedulas.add(10);
+
 		for(int i = 0; i <= 12; i++) {
             this.qntd.add(i, 0);
 		}
-
 	}
 
 	//List<Integer> qntd = new ArrayList<Integer>(13);
-	// BigDecimal dinheiro = sc.nextBigDecimal();
+	//BigDecimal dinheiro = sc.nextBigDecimal();
+
+	public void valorDisponivel(){
+		for(int i = 0; i < cedulas.size(); i++){
+			this.todoValorDisponivel = this.todoValorDisponivel.add(this.notas.get(i)
+					.multiply(BigDecimal.valueOf(cedulas.get(i))));
+		}
+		System.out.println("Valor disponivel para saque: " + this.todoValorDisponivel.setScale(2, RoundingMode.HALF_EVEN));
+	}
 
 
 	@Override
 	public void recebe () {
+		do {
 		System.out.println("Caixa Eletrônico: \n");
 		System.out.println("Quanto dinheiro você quer sacar:");
 		d = sc.nextFloat();
-		do {
-			if (d < 0) {
+			if (d < 0 || this.todoValorDisponivel.compareTo(BigDecimal.valueOf(d)) < 0) {
 				System.out.println("VALOR INVALIDO");
 			}
-		} while (d < 0);
+		} while (d < 0 || this.todoValorDisponivel.compareTo(BigDecimal.valueOf(d)) < 0);
 	}
 
 	@Override
@@ -71,19 +92,16 @@ public class saqueS implements funcoes {
         BigDecimal dBD = new BigDecimal(d);
         dBD = dBD.setScale(2, RoundingMode.HALF_EVEN);
         int y = 0;
-        int l = 0;
-        int q = 0;
-        while(dBD.compareTo(BigDecimal.valueOf(0)) > 0 && y <= 12 && l <= 12) {
+        int q;
+        while(dBD.compareTo(BigDecimal.valueOf(0)) > 0 && y <= 12) {
             q = 0;
-            while(dBD.compareTo(this.notas.get(y)) >= 0){
+            while(dBD.compareTo(this.notas.get(y)) >= 0 && cedulas.get(y) > q){
                 q++;
                 dBD = dBD.subtract(this.notas.get(y));
             }
-            qntd.add(l, qntd.get(l) + q);
-            l++;
+            qntd.add(y, qntd.get(y) + q);
             y++;
         }
-
 
         for(int i = 0; i <= 6; i++){
             if(qntd.get(i) != 0){
@@ -106,14 +124,9 @@ public class saqueS implements funcoes {
 	@Override
 	public void operacao(){
 		this.lista();
+		this.valorDisponivel();
 		this.verfica();
 		this.calculo(d);
-	}
-
-	@Override
-	public void calculo() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'calculo'");
 	}
 
 }
