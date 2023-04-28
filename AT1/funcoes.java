@@ -7,4 +7,6 @@ public interface funcoes {
     public abstract void operacao();
     public abstract void calculo(float d);
     public abstract void valorDisponivel();
+    public abstract void caixa();
+    public abstract void conta();
 }
