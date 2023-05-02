@@ -9,4 +9,5 @@ public interface funcoes {
     public abstract void valorDisponivel();
     public abstract void caixa();
     public abstract void conta();
+    public abstract void qntd();
 }
